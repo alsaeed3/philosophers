@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 16:34:05 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/24 16:17:56 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/24 19:08:17 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	trigger_off(t_philo *philo, int flag)
 		pthread_mutex_lock(&philo->table->philo_lock[philo->id - 1]);
 		pthread_mutex_lock(&philo->table->philo_lock[0]);
 	}
-	if ((flag == FORK_STAT) && (philo->id % philo->table->philos_num))
+	else if ((flag == FORK_STAT) && (philo->id % philo->table->philos_num))
 	{
 		philo->table->fork_stat[philo->id - 1] = false;
 		philo->table->fork_stat[philo->id] = false;
