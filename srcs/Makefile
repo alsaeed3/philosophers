@@ -6,7 +6,7 @@
 #    By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/22 13:14:09 by alsaeed           #+#    #+#              #
-#    Updated: 2023/11/16 20:54:28 by alsaeed          ###   ########.fr        #
+#    Updated: 2023/11/24 19:57:23 by alsaeed          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,8 +16,7 @@ SRCS = main.c ft_atoi.c parse_utils.c ft_split.c time.c utils.c
 OBJS_DIR = objs/
 OBJS = $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 
-CFLAGS = -g #-fsanitize=address
-# -Wall -Wextra -Werror -pthread -g3
+CFLAGS = -Wall -Wextra -Werror -pthread
 
 all: $(NAME)
 

@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 19:42:13 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/16 14:16:27 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/24 19:57:56 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,13 +107,11 @@ int		check_overflow(char **str, int ac)
 {
 	int	i;
 	int error;
-	int	dum;
 	
 	i = -1;
 	error = 0;
-	dum = 0;
 	while (++i < ac - 1)
-		dum = ft_atoi(str[i], &error);
+		ft_atoi(str[i], &error);
 	if (error == -1)
 		return (1);
 	return (0);
