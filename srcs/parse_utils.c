@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 19:42:13 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/24 19:57:56 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/24 21:25:11 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,9 @@ char	**parse_args(int ac, char **av)
 {
 	char	*str;
 	char	**str_arr;
+	int		i;
 
+	i = 0;
 	str_arr = NULL;
 	if (ft_space_arg(av) == -1)
 	{
@@ -167,7 +169,9 @@ char	**parse_args(int ac, char **av)
 	str_arr = ft_split(str, ' ');
 	free (str);
 	str = NULL;
-	if (parse_nonnum_arg(str_arr) == -1 || check_overflow(str_arr, ac) == -1)
+	if (parse_nonnum_arg(str_arr) == -1 || check_overflow(str_arr, ac) == -1 \
+		|| !ft_atoi(str_arr[0], &i) || !ft_atoi(str_arr[1], &i) \
+		|| !ft_atoi(str_arr[2], &i) || !ft_atoi(str_arr[3], &i) || i == -1)
 	{
 		free_array(str_arr);
 		printf("Error\n");

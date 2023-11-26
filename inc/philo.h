@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 20:56:05 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/24 18:19:57 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/25 13:10:54 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 # define SLEEP 3
 # define THINK 4
 # define DIE 5
-# define PHILO_LOCK 6
+# define FORK_LOCK 6
 # define FORK_STAT 7
 # define FORK_MASK 8
 
@@ -43,8 +43,7 @@ typedef struct	s_table
 	bool			*fork_stat;
 	int				*fork_mask;
 	pthread_mutex_t	table_lock;
-	pthread_mutex_t	print_lock;
-	pthread_mutex_t	*philo_lock;
+	pthread_mutex_t	*fork_lock;
 }	t_table;
 
 typedef struct	s_philo

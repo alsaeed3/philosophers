@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 20:56:15 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/24 18:25:52 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/25 14:17:26 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@ bool	eat_noodles(t_philo *philo)
 	trigger_on(philo, FORK_STAT);
 	trigger_on(philo, FORK_MASK);
 	philo->life = get_duration(&philo->life_tv);
-	trigger_on(philo, PHILO_LOCK);
+	trigger_on(philo, FORK_LOCK);
 	display_log(philo, TAKE);
 	display_log(philo, TAKE);
 	display_log(philo, EAT);
 	philo->meals--;
 	if (eating_time(philo))
 		return (true);
-	trigger_off(philo, PHILO_LOCK);
+	trigger_off(philo, FORK_LOCK);
 	trigger_off(philo, FORK_STAT);
 	display_log(philo, SLEEP);
 	if (sleeping_time(philo))
@@ -37,12 +37,12 @@ bool	mask_fork(t_philo *philo)
 {
 	if (philo->id % philo->table->philos_num)
 	{
-		if (philo->table->fork_mask[philo->id - 1] == philo->id || philo->table->fork_mask[philo->id] == philo->id)
+		if (philo->table->fork_mask[philo->id - 1] == philo->id)
 			return (false);
 	}
-	else
+	else if (!(philo->id % philo->table->philos_num))
 	{
-		if (philo->table->fork_mask[philo->id - 1] == philo->id || philo->table->fork_mask[0] == philo->id)
+		if (philo->table->fork_mask[philo->id - 1] == philo->id)
 			return (false);
 	}
 	return (true);
@@ -59,18 +59,19 @@ void	*routine(void *philo_ptr)
 	{
 		if (is_dead(philo) || !philo->meals)
 			break ;
-		trigger_off(philo, PHILO_LOCK);
+		trigger_off(philo, FORK_LOCK);
 		if ((philo->id % philo->table->philos_num) && !philo->table->fork_stat[philo->id - 1] && !philo->table->fork_stat[philo->id] && philo->meals && mask_fork(philo))
 		{
 			if (eat_noodles(philo))
 				return (NULL);
 		}
-		else if (!(philo->id % philo->table->philos_num) && !philo->table->fork_stat[0] && !philo->table->fork_stat[philo->id - 1] && philo->meals && mask_fork(philo))
+		else if (!(philo->id % philo->table->philos_num) && !philo->table->fork_stat[philo->id - 1] &&!philo->table->fork_stat[0] && philo->meals && mask_fork(philo))
 		{
 			if (eat_noodles(philo))
 				return (NULL);
 		}
-		trigger_on(philo, PHILO_LOCK);
+		trigger_on(philo, FORK_LOCK);
+		usleep(50);
 	}
 	return (NULL);
 }
@@ -82,11 +83,10 @@ void	fill_table(t_table *table, char **input, int i)
 	table->time_die = ft_atoi(input[1], &i);
 	table->time_eat = ft_atoi(input[2], &i);
 	table->time_sleep = ft_atoi(input[3], &i);
-	table->philo_lock = ft_calloc(sizeof(pthread_mutex_t), table->philos_num);
+	table->fork_lock = ft_calloc(sizeof(pthread_mutex_t), table->philos_num);
 	table->fork_stat = ft_calloc(sizeof(bool), table->philos_num);
 	table->fork_mask = ft_calloc(sizeof(int), table->philos_num);
 	pthread_mutex_init(&table->table_lock, NULL);
-	pthread_mutex_init(&table->print_lock, NULL);
 }
 
 void	init_philos(t_philo	**philo, char **input, int ac)
@@ -104,7 +104,7 @@ void	init_philos(t_philo	**philo, char **input, int ac)
 		philo[i]->id = i + 1;
 		philo[i]->table->fork_stat[i] = false;
 		philo[i]->table->fork_mask[i] = 0;
-		pthread_mutex_init(&philo[i]->table->philo_lock[i], NULL);
+		pthread_mutex_init(&philo[i]->table->fork_lock[i], NULL);
 		gettimeofday(&philo[i]->life_tv, NULL);
 		philo[i]->life = get_duration(&philo[i]->life_tv);
 		if (ac == 6)
@@ -122,7 +122,7 @@ void	cleanup(t_philo **philos, char **input, int range)
 	free_array(input);
 	free((*philos)->table->fork_stat);
 	free((*philos)->table->fork_mask);
-	free((*philos)->table->philo_lock);
+	free((*philos)->table->fork_lock);
 	free((*philos)->table);
 	i = -1;
 	while (++i < range)

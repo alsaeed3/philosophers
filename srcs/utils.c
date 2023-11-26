@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 16:34:05 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/24 19:08:17 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/25 13:20:37 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	display_log(t_philo *philo, int stat)
 {
 	pthread_mutex_lock(&philo->table->table_lock);
-	pthread_mutex_lock(&philo->table->print_lock);
 	if (!philo->table->dead_philo)
 	{
 		printf("%lu %d", get_duration(&philo->life_tv), philo->id);
@@ -33,7 +32,6 @@ void	display_log(t_philo *philo, int stat)
 			philo->table->dead_philo = true;
 		}
 	}
-	pthread_mutex_unlock(&philo->table->print_lock);
 	pthread_mutex_unlock(&philo->table->table_lock);
 }
 
@@ -77,15 +75,15 @@ void	*single_philo(t_philo *philo)
 
 void	trigger_on(t_philo *philo, int flag)
 {
-	if ((flag == PHILO_LOCK) && (philo->id % philo->table->philos_num))
+	if ((flag == FORK_LOCK) && (philo->id % philo->table->philos_num))
 	{
-		pthread_mutex_unlock(&philo->table->philo_lock[philo->id - 1]);
-		pthread_mutex_unlock(&philo->table->philo_lock[philo->id]);
+		pthread_mutex_unlock(&philo->table->fork_lock[philo->id - 1]);
+		pthread_mutex_unlock(&philo->table->fork_lock[philo->id]);
 	}
-	else if ((flag == PHILO_LOCK) && !(philo->id % philo->table->philos_num))
+	else if ((flag == FORK_LOCK) && !(philo->id % philo->table->philos_num))
 	{
-		pthread_mutex_unlock(&philo->table->philo_lock[philo->id - 1]);
-		pthread_mutex_unlock(&philo->table->philo_lock[0]);
+		pthread_mutex_unlock(&philo->table->fork_lock[philo->id - 1]);
+		pthread_mutex_unlock(&philo->table->fork_lock[0]);
 	}
 	else if ((flag == FORK_STAT) && (philo->id % philo->table->philos_num))
 	{
@@ -103,15 +101,15 @@ void	trigger_on(t_philo *philo, int flag)
 
 void	trigger_off(t_philo *philo, int flag)
 {
-	if ((flag == PHILO_LOCK) && (philo->id % philo->table->philos_num))
+	if ((flag == FORK_LOCK) && (philo->id % philo->table->philos_num))
 	{
-		pthread_mutex_lock(&philo->table->philo_lock[philo->id - 1]);
-		pthread_mutex_lock(&philo->table->philo_lock[philo->id]);
+		pthread_mutex_lock(&philo->table->fork_lock[philo->id - 1]);
+		pthread_mutex_lock(&philo->table->fork_lock[philo->id]);
 	}
-	else if ((flag == PHILO_LOCK) && !(philo->id % philo->table->philos_num))
+	else if ((flag == FORK_LOCK) && !(philo->id % philo->table->philos_num))
 	{
-		pthread_mutex_lock(&philo->table->philo_lock[philo->id - 1]);
-		pthread_mutex_lock(&philo->table->philo_lock[0]);
+		pthread_mutex_lock(&philo->table->fork_lock[philo->id - 1]);
+		pthread_mutex_lock(&philo->table->fork_lock[0]);
 	}
 	else if ((flag == FORK_STAT) && (philo->id % philo->table->philos_num))
 	{

@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 16:29:52 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/24 16:46:36 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/25 13:19:15 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ bool sleeping_time(t_philo *philo)
 	long	curr_time;
 	long	wake_time;
 
-	trigger_on(philo, PHILO_LOCK);
+	trigger_on(philo, FORK_LOCK);
 	curr_time = get_current_time();
 	wake_time = curr_time + (philo->table->time_sleep * 1000);
 	while (curr_time < wake_time)
@@ -59,6 +59,6 @@ bool sleeping_time(t_philo *philo)
 			return (true);
 		curr_time = get_current_time();
 	}
-	trigger_off(philo, PHILO_LOCK);
+	trigger_off(philo, FORK_LOCK);
 	return (false);
 }
