@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 20:56:15 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/25 14:17:26 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/26 19:09:12 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ bool	eat_noodles(t_philo *philo)
 {
 	trigger_on(philo, FORK_STAT);
 	trigger_on(philo, FORK_MASK);
-	philo->life = get_duration(&philo->life_tv);
 	trigger_on(philo, FORK_LOCK);
+	philo->life = get_duration(&philo->life_tv);
 	display_log(philo, TAKE);
 	display_log(philo, TAKE);
 	display_log(philo, EAT);
@@ -33,19 +33,25 @@ bool	eat_noodles(t_philo *philo)
 	return (false);
 }
 
-bool	mask_fork(t_philo *philo)
+int	check_eating(t_philo *philo)
 {
-	if (philo->id % philo->table->philos_num)
+	if ((philo->id % philo->table->philos_num) \
+			&& !philo->table->fork_stat[philo->id - 1] \
+			&& !philo->table->fork_stat[philo->id] \
+			&& philo->meals && mask_fork(philo))
 	{
-		if (philo->table->fork_mask[philo->id - 1] == philo->id)
-			return (false);
+		if (eat_noodles(philo))
+			return (1);
 	}
-	else if (!(philo->id % philo->table->philos_num))
+	else if (!(philo->id % philo->table->philos_num) \
+			&& !philo->table->fork_stat[philo->id - 1] \
+			&& !philo->table->fork_stat[0] && philo->meals \
+			&& mask_fork(philo))
 	{
-		if (philo->table->fork_mask[philo->id - 1] == philo->id)
-			return (false);
+		if (eat_noodles(philo))
+			return (1);
 	}
-	return (true);
+	return (0);
 }
 
 void	*routine(void *philo_ptr)
@@ -60,84 +66,15 @@ void	*routine(void *philo_ptr)
 		if (is_dead(philo) || !philo->meals)
 			break ;
 		trigger_off(philo, FORK_LOCK);
-		if ((philo->id % philo->table->philos_num) && !philo->table->fork_stat[philo->id - 1] && !philo->table->fork_stat[philo->id] && philo->meals && mask_fork(philo))
-		{
-			if (eat_noodles(philo))
-				return (NULL);
-		}
-		else if (!(philo->id % philo->table->philos_num) && !philo->table->fork_stat[philo->id - 1] &&!philo->table->fork_stat[0] && philo->meals && mask_fork(philo))
-		{
-			if (eat_noodles(philo))
-				return (NULL);
-		}
+		if (check_eating(philo))
+			return (NULL);
 		trigger_on(philo, FORK_LOCK);
 		usleep(50);
 	}
 	return (NULL);
 }
 
-void	fill_table(t_table *table, char **input, int i)
-{
-	table->dead_philo = false;
-	table->philos_num = ft_atoi(input[0], &i);
-	table->time_die = ft_atoi(input[1], &i);
-	table->time_eat = ft_atoi(input[2], &i);
-	table->time_sleep = ft_atoi(input[3], &i);
-	table->fork_lock = ft_calloc(sizeof(pthread_mutex_t), table->philos_num);
-	table->fork_stat = ft_calloc(sizeof(bool), table->philos_num);
-	table->fork_mask = ft_calloc(sizeof(int), table->philos_num);
-	pthread_mutex_init(&table->table_lock, NULL);
-}
-
-void	init_philos(t_philo	**philo, char **input, int ac)
-{
-	int		i;
-	t_table	*table;
-
-	i = 0;
-	table = ft_calloc(sizeof(t_table), 1);
-	fill_table(table, input, i);
-	while (i < ft_atoi(input[0], &i))
-	{
-		philo[i] = ft_calloc(sizeof(t_philo), 1);
-		philo[i]->table = table;
-		philo[i]->id = i + 1;
-		philo[i]->table->fork_stat[i] = false;
-		philo[i]->table->fork_mask[i] = 0;
-		pthread_mutex_init(&philo[i]->table->fork_lock[i], NULL);
-		gettimeofday(&philo[i]->life_tv, NULL);
-		philo[i]->life = get_duration(&philo[i]->life_tv);
-		if (ac == 6)
-			philo[i]->meals = ft_atoi(input[4], &i);
-		else
-			philo[i]->meals = -1;
-		i++;
-	}
-}
-
-void	cleanup(t_philo **philos, char **input, int range)
-{
-	int	i;
-
-	free_array(input);
-	free((*philos)->table->fork_stat);
-	free((*philos)->table->fork_mask);
-	free((*philos)->table->fork_lock);
-	free((*philos)->table);
-	i = -1;
-	while (++i < range)
-	{
-		free(philos[i]);
-		philos[i] = NULL;
-	}
-	if (philos)
-	{
-		free(philos);
-		philos = NULL;
-	}
-}
-
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
 	t_philo		**philo;
 	char		**input;

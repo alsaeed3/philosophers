@@ -6,11 +6,24 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 19:53:09 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/14 15:01:07 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/26 18:52:49 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
+
+void	*ft_calloc(size_t count, size_t size)
+{
+	void	*memory;
+
+	if (count != 0 && size != 0 && count > SIZE_MAX / size)
+		return (NULL);
+	memory = malloc(count * size);
+	if (memory == NULL)
+		return (NULL);
+	memset(memory, 0, count * size);
+	return (memory);
+}
 
 static int	ft_count_words(char *s, char c)
 {
