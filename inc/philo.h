@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 20:56:05 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/26 19:10:10 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/28 16:34:47 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,6 @@
 typedef struct s_table
 {
 	bool			dead_philo;
-	int				philos_num;
-	int				time_die;
-	int				time_eat;
-	int				time_sleep;
 	bool			*fork_stat;
 	int				*fork_mask;
 	pthread_mutex_t	table_lock;
@@ -50,6 +46,10 @@ typedef struct s_philo
 {
 	int				id;
 	int				meals;
+	int				philos_num;
+	int				time_die;
+	int				time_eat;
+	int				time_sleep;
 	long			life;
 	struct timeval	life_tv;
 	pthread_t		thread;
@@ -69,7 +69,7 @@ char	**ft_get_array(int ac, char **av);
 int		ft_atoi(char *num, int *error);
 char	**ft_split(char *s, char c);
 void	*ft_calloc(size_t count, size_t size);
-void	fill_table(t_table *table, char **input, int i);
+void	fill_table(t_table *table, char **input);
 void	init_philos(t_philo	**philo, char **input, int ac);
 void	display_log(t_philo *philo, int stat);
 bool	is_dead(t_philo *philo);
@@ -79,10 +79,10 @@ long	get_current_time(void);
 bool	eating_time(t_philo *philo);
 bool	sleeping_time(t_philo *philo);
 bool	eat_noodles(t_philo *philo);
-bool	mask_fork(t_philo *philo);
+bool	check_greedy(t_philo *philo);
 void	trigger_on(t_philo *philo, int flag);
+void	trigger_mask(t_philo *philo);
 void	trigger_off(t_philo *philo, int flag);
-void	trigger_mask(t_philo *philo, bool trigger);
 void	cleanup(t_philo **philos, char **input, int range);
 
 #endif

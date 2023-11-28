@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 16:29:52 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/26 18:54:46 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/28 16:32:57 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ bool	is_dead(t_philo *philo)
 	else
 	{
 		time_diff = get_duration(&philo->life_tv);
-		if (time_diff - philo->life > philo->table->time_die)
+		if (time_diff - philo->life > philo->time_die)
 		{
 			pthread_mutex_unlock(&philo->table->table_lock);
 			display_log(philo, DIE);
@@ -60,7 +60,7 @@ bool	eating_time(t_philo *philo)
 	long	meal_time;
 
 	curr_time = get_current_time();
-	meal_time = curr_time + (philo->table->time_eat * 1000);
+	meal_time = curr_time + (philo->time_eat * 1000);
 	while (curr_time < meal_time)
 	{
 		if (is_dead(philo))
@@ -77,7 +77,7 @@ bool	sleeping_time(t_philo *philo)
 
 	trigger_on(philo, FORK_LOCK);
 	curr_time = get_current_time();
-	wake_time = curr_time + (philo->table->time_sleep * 1000);
+	wake_time = curr_time + (philo->time_sleep * 1000);
 	while (curr_time < wake_time)
 	{
 		if (is_dead(philo))

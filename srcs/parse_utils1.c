@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 15:24:45 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/26 18:53:32 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/28 13:52:14 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,10 @@ void	display_log(t_philo *philo, int stat)
 		if (stat == TAKE)
 			printf(" has taken a fork\n");
 		else if (stat == EAT)
+		{
+			philo->meals--;
 			printf(" is eating\n");
+		}
 		else if (stat == SLEEP)
 			printf(" is sleeping\n");
 		else if (stat == THINK)

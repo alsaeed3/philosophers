@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 20:56:15 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/26 19:09:12 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/28 18:44:56 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ bool	eat_noodles(t_philo *philo)
 	display_log(philo, TAKE);
 	display_log(philo, TAKE);
 	display_log(philo, EAT);
-	philo->meals--;
 	if (eating_time(philo))
 		return (true);
 	trigger_off(philo, FORK_LOCK);
@@ -33,25 +32,25 @@ bool	eat_noodles(t_philo *philo)
 	return (false);
 }
 
-int	check_eating(t_philo *philo)
+bool	check_eating(t_philo *philo)
 {
-	if ((philo->id % philo->table->philos_num) \
-			&& !philo->table->fork_stat[philo->id - 1] \
-			&& !philo->table->fork_stat[philo->id] \
-			&& philo->meals && mask_fork(philo))
+	if ((philo->id % philo->philos_num) \
+		&& !philo->table->fork_stat[philo->id - 1] \
+		&& !philo->table->fork_stat[philo->id] \
+		&& philo->meals && check_greedy(philo))
 	{
 		if (eat_noodles(philo))
-			return (1);
+			return (true);
 	}
-	else if (!(philo->id % philo->table->philos_num) \
+	else if (!(philo->id % philo->philos_num) \
 			&& !philo->table->fork_stat[philo->id - 1] \
 			&& !philo->table->fork_stat[0] && philo->meals \
-			&& mask_fork(philo))
+			&& check_greedy(philo))
 	{
 		if (eat_noodles(philo))
-			return (1);
+			return (true);
 	}
-	return (0);
+	return (false);
 }
 
 void	*routine(void *philo_ptr)
@@ -59,7 +58,7 @@ void	*routine(void *philo_ptr)
 	t_philo	*philo;
 
 	philo = (t_philo *)philo_ptr;
-	if (philo->table->philos_num == 1)
+	if (philo->philos_num == 1)
 		return (single_philo(philo));
 	while (1)
 	{
@@ -67,9 +66,12 @@ void	*routine(void *philo_ptr)
 			break ;
 		trigger_off(philo, FORK_LOCK);
 		if (check_eating(philo))
+		{
+			trigger_on(philo, FORK_LOCK);
 			return (NULL);
+		}
 		trigger_on(philo, FORK_LOCK);
-		usleep(50);
+		usleep(150);
 	}
 	return (NULL);
 }
@@ -95,7 +97,7 @@ int	main(int ac, char **av)
 		i = -1;
 		while (++i < ft_atoi(input[0], &i))
 			pthread_join(philo[i]->thread, NULL);
-		cleanup(philo, input, philo[0]->table->philos_num);
+		cleanup(philo, input, philo[0]->philos_num);
 		return (0);
 	}
 	printf("Error: Invalid number of arguments\n");
