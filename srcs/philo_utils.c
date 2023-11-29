@@ -18,7 +18,8 @@ void	fill_table(t_table *table, char **input)
 
 	i = 0;
 	table->dead_philo = false;
-	table->fork_lock = ft_calloc(sizeof(pthread_mutex_t), ft_atoi(input[0], &i));
+	table->fork_lock = ft_calloc(sizeof(pthread_mutex_t), \
+						ft_atoi(input[0], &i));
 	table->fork_stat = ft_calloc(sizeof(bool), ft_atoi(input[0], &i));
 	table->fork_mask = ft_calloc(sizeof(int), ft_atoi(input[0], &i));
 	pthread_mutex_init(&table->table_lock, NULL);
@@ -58,14 +59,14 @@ bool	check_greedy(t_philo *philo)
 	if (philo->id % philo->philos_num)
 	{
 		if (philo->table->fork_mask[philo->id - 1] == philo->id \
-			|| philo->table->fork_mask[philo->id] == philo->id)
-		return (false);
+				|| philo->table->fork_mask[philo->id] == philo->id)
+			return (false);
 	}
-	else 
+	else
 	{
 		if (philo->table->fork_mask[philo->id - 1] == philo->id \
 			|| philo->table->fork_mask[0] == philo->id)
-		return (false);
+			return (false);
 	}
 	return (true);
 }

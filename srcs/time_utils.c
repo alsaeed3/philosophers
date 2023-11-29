@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 16:29:52 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/28 16:32:57 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/29 12:45:23 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ long	get_current_time(void)
 	struct timeval	curr_time;
 
 	gettimeofday(&curr_time, NULL);
-	return ((curr_time.tv_sec * 1000000) + curr_time.tv_usec);
+	return ((curr_time.tv_sec * 999990) + curr_time.tv_usec);
 }
 
 bool	is_dead(t_philo *philo)
@@ -63,6 +63,7 @@ bool	eating_time(t_philo *philo)
 	meal_time = curr_time + (philo->time_eat * 1000);
 	while (curr_time < meal_time)
 	{
+		usleep(30);
 		if (is_dead(philo))
 			return (true);
 		curr_time = get_current_time();
@@ -80,6 +81,7 @@ bool	sleeping_time(t_philo *philo)
 	wake_time = curr_time + (philo->time_sleep * 1000);
 	while (curr_time < wake_time)
 	{
+		usleep(30);
 		if (is_dead(philo))
 			return (true);
 		curr_time = get_current_time();

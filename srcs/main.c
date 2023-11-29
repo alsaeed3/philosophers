@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 20:56:15 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/28 18:44:56 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/29 12:46:18 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,13 @@ void	*routine(void *philo_ptr)
 		return (single_philo(philo));
 	while (1)
 	{
+		usleep(50);
 		if (is_dead(philo) || !philo->meals)
 			break ;
 		trigger_off(philo, FORK_LOCK);
 		if (check_eating(philo))
-		{
-			trigger_on(philo, FORK_LOCK);
 			return (NULL);
-		}
 		trigger_on(philo, FORK_LOCK);
-		usleep(150);
 	}
 	return (NULL);
 }
@@ -92,7 +89,7 @@ int	main(int ac, char **av)
 		while (++i < ft_atoi(input[0], &i))
 		{
 			pthread_create(&philo[i]->thread, NULL, routine, philo[i]);
-			usleep(350);
+			usleep(200);
 		}
 		i = -1;
 		while (++i < ft_atoi(input[0], &i))
@@ -100,6 +97,6 @@ int	main(int ac, char **av)
 		cleanup(philo, input, philo[0]->philos_num);
 		return (0);
 	}
-	printf("Error: Invalid number of arguments\n");
+	printf("Error\nInvalid number of arguments\n");
 	return (1);
 }

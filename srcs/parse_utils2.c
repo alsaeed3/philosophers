@@ -30,7 +30,7 @@ void	free_parse(char **arr)
 {
 	if (arr)
 		free_array(arr);
-	write(2, "Error: Invalid arguments\n", 25);
+	printf("Error\nInvalid arguments\n");
 	exit (1);
 }
 
@@ -44,7 +44,7 @@ char	**parse_args(int ac, char **av)
 	str_arr = NULL;
 	if (ft_space_arg(av) == -1)
 	{
-		printf("Error\n");
+		printf("Error\nSpace-only argument\n");
 		exit (1);
 	}
 	str = ft_strjoin_sp(ac, av);
@@ -55,7 +55,7 @@ char	**parse_args(int ac, char **av)
 		|| !ft_atoi(str_arr[0], &i) || !ft_atoi(str_arr[1], &i) \
 		|| !ft_atoi(str_arr[2], &i) || !ft_atoi(str_arr[3], &i) || i == -1)
 	{
-		printf("Error\n");
+		printf("Error\nNon-num/Over-flow/Zero/Negative argument\n");
 		free_array(str_arr);
 		exit (1);
 	}

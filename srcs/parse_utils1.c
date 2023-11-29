@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 15:24:45 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/11/28 13:52:14 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/11/28 20:38:27 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,10 @@ void	cleanup(t_philo **philos, char **input, int range)
 	int	i;
 
 	free_array(input);
+	i = -1;
+	while (++i < range)
+		pthread_mutex_destroy(&philos[i]->table->fork_lock[i]);
+	pthread_mutex_destroy(&(*philos)->table->table_lock);
 	free((*philos)->table->fork_stat);
 	free((*philos)->table->fork_mask);
 	free((*philos)->table->fork_lock);
