@@ -63,7 +63,7 @@ bool	eating_time(t_philo *philo)
 	meal_time = curr_time + (philo->time_eat * 1000);
 	while (curr_time < meal_time)
 	{
-		usleep(30);
+		usleep(500);
 		if (is_dead(philo))
 			return (true);
 		curr_time = get_current_time();
@@ -81,7 +81,7 @@ bool	sleeping_time(t_philo *philo)
 	wake_time = curr_time + (philo->time_sleep * 1000);
 	while (curr_time < wake_time)
 	{
-		usleep(30);
+		usleep(500);
 		if (is_dead(philo))
 			return (true);
 		curr_time = get_current_time();

@@ -62,7 +62,7 @@ void	*routine(void *philo_ptr)
 		return (single_philo(philo));
 	while (1)
 	{
-		usleep(50);
+		usleep(500);
 		if (is_dead(philo) || !philo->meals)
 			break ;
 		trigger_off(philo, FORK_LOCK);
@@ -89,7 +89,7 @@ int	main(int ac, char **av)
 		while (++i < ft_atoi(input[0], &i))
 		{
 			pthread_create(&philo[i]->thread, NULL, routine, philo[i]);
-			usleep(200);
+			usleep(500);
 		}
 		i = -1;
 		while (++i < ft_atoi(input[0], &i))
