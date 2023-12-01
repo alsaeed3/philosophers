@@ -77,10 +77,7 @@ void	display_log(t_philo *philo, int stat)
 		if (stat == TAKE)
 			printf(" has taken a fork\n");
 		else if (stat == EAT)
-		{
-			philo->meals--;
 			printf(" is eating\n");
-		}
 		else if (stat == SLEEP)
 			printf(" is sleeping\n");
 		else if (stat == THINK)

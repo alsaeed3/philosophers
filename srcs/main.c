@@ -16,11 +16,12 @@ bool	eat_noodles(t_philo *philo)
 {
 	trigger_on(philo, FORK_STAT);
 	trigger_on(philo, FORK_MASK);
-	trigger_on(philo, FORK_LOCK);
 	philo->life = get_duration(&philo->life_tv);
+	trigger_on(philo, FORK_LOCK);
 	display_log(philo, TAKE);
 	display_log(philo, TAKE);
 	display_log(philo, EAT);
+	philo->meals--;
 	if (eating_time(philo))
 		return (true);
 	trigger_off(philo, FORK_LOCK);
