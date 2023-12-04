@@ -54,6 +54,7 @@ void	trigger_mask(t_philo *philo)
 
 void	trigger_off(t_philo *philo, int flag)
 {
+	usleep(32);
 	if ((flag == FORK_LOCK) && (philo->id % philo->philos_num))
 	{
 		pthread_mutex_lock(&philo->table->fork_lock[philo->id - 1]);

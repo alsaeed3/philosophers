@@ -46,7 +46,7 @@ void	init_philos(t_philo	**philo, char **input, int ac)
 		philo[i]->time_sleep = ft_atoi(input[3], &i);
 		pthread_mutex_init(&philo[i]->table->fork_lock[i], NULL);
 		gettimeofday(&philo[i]->life_tv, NULL);
-		philo[i]->life = get_duration(&philo[i]->life_tv);
+		philo[i]->life = get_current_time();
 		if (ac == 6)
 			philo[i]->meals = ft_atoi(input[4], &i);
 		else
@@ -56,16 +56,17 @@ void	init_philos(t_philo	**philo, char **input, int ac)
 
 bool	check_greedy(t_philo *philo)
 {
+	usleep(32);
 	if (philo->id % philo->philos_num)
 	{
 		if (philo->table->fork_mask[philo->id - 1] == philo->id \
-				|| philo->table->fork_mask[philo->id] == philo->id)
+			|| philo->table->fork_mask[philo->id] == philo->id)
 			return (false);
 	}
-	else
+	else if (!(philo->id % philo->philos_num))
 	{
-		if (philo->table->fork_mask[philo->id - 1] == philo->id \
-			|| philo->table->fork_mask[0] == philo->id)
+		if (philo->table->fork_mask[0] == philo->id \
+			|| philo->table->fork_mask[philo->id - 1] == philo->id)
 			return (false);
 	}
 	return (true);

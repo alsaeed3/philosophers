@@ -26,7 +26,7 @@ long	get_current_time(void)
 	struct timeval	curr_time;
 
 	gettimeofday(&curr_time, NULL);
-	return ((curr_time.tv_sec * 999990) + curr_time.tv_usec);
+	return ((curr_time.tv_sec * 1000000) + curr_time.tv_usec);
 }
 
 bool	is_dead(t_philo *philo)
@@ -63,7 +63,7 @@ bool	eating_time(t_philo *philo)
 	meal_time = curr_time + (philo->time_eat * 1000);
 	while (curr_time < meal_time)
 	{
-		usleep(128);
+		usleep(32);
 		if (is_dead(philo))
 			return (true);
 		curr_time = get_current_time();
@@ -81,7 +81,7 @@ bool	sleeping_time(t_philo *philo)
 	wake_time = curr_time + (philo->time_sleep * 1000);
 	while (curr_time < wake_time)
 	{
-		sleep(128);
+		usleep(32);
 		if (is_dead(philo))
 			return (true);
 		curr_time = get_current_time();

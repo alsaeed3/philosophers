@@ -44,8 +44,8 @@ bool	check_eating(t_philo *philo)
 			return (true);
 	}
 	else if (!(philo->id % philo->philos_num) \
-			&& !philo->table->fork_stat[philo->id - 1] \
-			&& !philo->table->fork_stat[0] && philo->meals \
+			&& !philo->table->fork_stat[0] \
+			&& !philo->table->fork_stat[philo->id - 1] && philo->meals \
 			&& check_greedy(philo))
 	{
 		if (eat_noodles(philo))
@@ -63,14 +63,12 @@ void	*routine(void *philo_ptr)
 		return (single_philo(philo));
 	while (1)
 	{
-		usleep(128);
 		if (is_dead(philo) || !philo->meals)
 			break ;
 		trigger_off(philo, FORK_LOCK);
 		if (check_eating(philo))
 			return (NULL);
 		trigger_on(philo, FORK_LOCK);
-		usleep(32);
 	}
 	return (NULL);
 }
@@ -91,7 +89,7 @@ int	main(int ac, char **av)
 		while (++i < ft_atoi(input[0], &i))
 		{
 			pthread_create(&philo[i]->thread, NULL, routine, philo[i]);
-			usleep(256);
+			usleep(32);
 		}
 		i = -1;
 		while (++i < ft_atoi(input[0], &i))
