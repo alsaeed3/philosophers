@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils3.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alsaeed <alsaeed@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 19:42:13 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/04 16:23:37 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/12/28 20:06:40 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-int	parse_nonnum_arg(char **s)
+t_bool	parse_nonnum_arg(char **s)
 {
 	int	j;
 	int	i;
@@ -25,34 +25,37 @@ int	parse_nonnum_arg(char **s)
 		{
 			if (s[j][i] != ' ' && !(s[j][i] == '-' || s[j][i] == '+') \
 			&& !(s[j][i] >= '0' && s[j][i] <= '9'))
-				return (-1);
+				return (TRUE);
 			if ((s[j][i] == '+' || s[j][i] == '-' \
 			|| (s[j][i] >= '0' && s[j][i] <= '9')) \
 			&& (s[j][i + 1] == '+' || s[j][i + 1] == '-'))
-				return (-1);
+				return (TRUE);
 			if ((s[j][i] == '+' || s[j][i] == '-') \
 			&& (s[j][i + 1] == ' ' || s[j][i + 1] == '\0'))
-				return (-1);
+				return (TRUE);
 			i++;
 		}
 		j++;
 	}
-	return (0);
+	return (FALSE);
 }
 
-void	get_array(int ac, char **av, char ***str_arr)
+void	get_array(int ac, char **av, char ***str_arr, t_bool *error)
 {
 	char	*str;
 
 	str = NULL;
-	str = ft_strjoin_sp(ac, av);
+	str = ft_strjoin_sp(ac, av, error);
 	*str_arr = ft_split(str, ' ');
 	free (str);
-	if (parse_nonnum_arg(*str_arr) == -1)
+	if (parse_nonnum_arg(*str_arr))
+	{
 		free_parse(*str_arr);
+		*error = TRUE;
+	}
 }
 
-int	ft_isspace_str(char *s)
+t_bool	ft_isspace_str(char *s)
 {
 	int	i;
 
@@ -62,24 +65,24 @@ int	ft_isspace_str(char *s)
 	while (s[i])
 	{
 		if (s[i] != ' ')
-			return (0);
+			return (FALSE);
 		i++;
 	}
-	return (-1);
+	return (TRUE);
 }
 
-int	ft_space_arg(char **s)
+t_bool	ft_space_arg(char **s)
 {
 	int	i;
 
 	i = 0;
 	while (s[i])
 	{
-		if (ft_isspace_str(s[i]) == -1)
-			return (-1);
+		if (ft_isspace_str(s[i]))
+			return (TRUE);
 		i++;
 	}
-	return (0);
+	return (FALSE);
 }
 
 void	free_array(char **array)

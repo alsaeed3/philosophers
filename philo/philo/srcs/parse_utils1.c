@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parse_utils1.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alsaeed <alsaeed@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 15:24:45 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/04 16:23:31 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/12/28 20:03:41 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-int	ft_atoi(char *num, int *error)
+long	ft_atoi(char *num, t_bool *error)
 {
 	int		i;
 	long	res;
@@ -24,16 +24,16 @@ int	ft_atoi(char *num, int *error)
 	if (num[i] == '-' || num[i] == '+')
 	{
 		if (num[i] == '-')
-			*error = -1;
+			*error = TRUE;
 		i++;
 	}
 	if (num[i] == '+')
-		*error = -1;
+		*error = TRUE;
 	while (num[i] >= '0' && num[i] <= '9')
 	{
 		res = res * 10 + num[i] - 48;
 		if (res > 2147483647)
-			*error = -1;
+			*error = TRUE;
 		i++;
 	}
 	return (res);
@@ -49,21 +49,21 @@ int	ft_array_size(char **array)
 	return (i);
 }
 
-char	**ft_get_array(int ac, char **av)
+char	**ft_get_array(int ac, char **av, t_bool *error)
 {
 	char	*str;
 	char	**array;
 
 	str = NULL;
 	array = NULL;
-	str = ft_strjoin_sp(ac, av);
+	str = ft_strjoin_sp(ac, av, error);
 	array = ft_split(str, ' ');
 	free (str);
 	str = NULL;
 	if (ft_array_size(array) != 5)
 	{
 		free_array(array);
-		exit (0);
+		*error = TRUE;
 	}
 	return (array);
 }
@@ -85,7 +85,7 @@ void	display_log(t_philo *philo, int stat)
 		else if (stat == DIE)
 		{
 			printf(" died\n");
-			philo->table->dead_philo = true;
+			philo->table->dead_philo = TRUE;
 		}
 	}
 	pthread_mutex_unlock(&philo->table->table_lock);

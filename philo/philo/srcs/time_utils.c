@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   time_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alsaeed <alsaeed@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 16:29:52 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/04 16:23:05 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/12/28 19:16:11 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,16 @@ long	get_current_time(void)
 	return ((curr_time.tv_sec * 1000000) + curr_time.tv_usec);
 }
 
-bool	is_dead(t_philo *philo)
+t_bool	is_dead(t_philo *philo)
 {
 	long	time_diff;
-	bool	flag;
+	t_bool	flag;
 
-	flag = false;
+	flag = FALSE;
+	usleep(200);
 	pthread_mutex_lock(&philo->table->table_lock);
 	if (philo->table->dead_philo)
-		flag = true;
+		flag = TRUE;
 	else
 	{
 		time_diff = get_duration(&philo->life_tv);
@@ -46,15 +47,15 @@ bool	is_dead(t_philo *philo)
 			pthread_mutex_unlock(&philo->table->table_lock);
 			display_log(philo, DIE);
 			pthread_mutex_lock(&philo->table->table_lock);
-			philo->table->dead_philo = true;
-			flag = true;
+			philo->table->dead_philo = TRUE;
+			flag = TRUE;
 		}
 	}
 	pthread_mutex_unlock(&philo->table->table_lock);
 	return (flag);
 }
 
-bool	eating_time(t_philo *philo)
+t_bool	eating_time(t_philo *philo)
 {
 	long	curr_time;
 	long	meal_time;
@@ -63,29 +64,25 @@ bool	eating_time(t_philo *philo)
 	meal_time = curr_time + (philo->time_eat * 1000);
 	while (curr_time < meal_time)
 	{
-		usleep(32);
 		if (is_dead(philo))
-			return (true);
+			return (TRUE);
 		curr_time = get_current_time();
 	}
-	return (false);
+	return (FALSE);
 }
 
-bool	sleeping_time(t_philo *philo)
+t_bool	sleeping_time(t_philo *philo)
 {
 	long	curr_time;
 	long	wake_time;
 
-	trigger_on(philo, FORK_LOCK);
 	curr_time = get_current_time();
 	wake_time = curr_time + (philo->time_sleep * 1000);
 	while (curr_time < wake_time)
 	{
-		usleep(32);
 		if (is_dead(philo))
-			return (true);
+			return (TRUE);
 		curr_time = get_current_time();
 	}
-	trigger_off(philo, FORK_LOCK);
-	return (false);
+	return (FALSE);
 }
