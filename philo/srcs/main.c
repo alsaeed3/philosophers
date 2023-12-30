@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 20:56:15 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/29 17:34:45 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/12/30 18:26:35 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,6 @@ t_bool	eat_noodles(t_philo *philo)
 		return (TRUE);
 	trigger_on(philo, FORK_LOCK);
 	display_log(philo, THINK);
-	return (FALSE);
-}
-
-t_bool	sleep_bro(t_philo *philo)
-{
-	trigger_on(philo, FORK_LOCK);
-	trigger_off(philo, FORK_STAT);
-	display_log(philo, SLEEP);
-	trigger_off(philo, FORK_LOCK);
-	if (sleeping_time(philo))
-		return (TRUE);
 	return (FALSE);
 }
 
@@ -84,7 +73,7 @@ void	*routine(void *philo_ptr)
 		pthread_mutex_lock(&philo->table->table_lock);
 		if (!philo->table->total_meals)
 		{
-			printf("-------------> philo %d is done\n", philo->id);
+			pthread_mutex_unlock(&philo->table->table_lock);
 			return (NULL);
 		}
 		pthread_mutex_unlock(&philo->table->table_lock);
@@ -98,38 +87,38 @@ void	*routine(void *philo_ptr)
 	return (NULL);
 }
 
+void	fill_main(t_main *main)
+{
+	main->i = -1;
+	main->j = -1;
+	main->philos_num = 0;
+	main->input = NULL;
+	main->error = FALSE;
+}
+
 int	main(int ac, char **av)
 {
-	t_philo		**philo;
-	char		**input;
-	int			i;
-	int			philos_num;
-	t_bool		error;
+	t_main	main;
 
-	input = NULL;
-	error = FALSE;
+	fill_main(&main);
 	if (ac == 5 || ac == 6)
 	{
-		input = parse_args(ac, av, &error);
-		i = -1;
-		if (error)
+		main.input = parse_args(ac, av, &main.error);
+		if (main.error)
 			return (1);
-		philos_num = ft_atoi(input[0], &error);
-		if (error)
-			return (1);
-		philo = ft_calloc(sizeof(t_philo *), philos_num);
-		init_philos(philo, input, philos_num, &error);
-		i = -1;
-		while (++i < philos_num)
+		main.philos_num = ft_atoi(main.input[0], &main.error);
+		main.philo = ft_calloc(sizeof(t_philo *), main.philos_num);
+		init_philos(main.philo, main.input, main.philos_num, &main.error);
+		while (++main.i < main.philos_num)
 		{
-			if (pthread_create(&philo[i]->thread, NULL, routine, philo[i]))
+			if (pthread_create(&main.philo[main.i]->thread, NULL, \
+				routine, main.philo[main.i]))
 				return (0);
 			usleep(350);
 		}
-		i = -1;
-		while (++i < philos_num)
-			pthread_join(philo[i]->thread, NULL);
-		cleanup(philo, input, philos_num);
+		while (++main.j < main.philos_num)
+			pthread_join(main.philo[main.j]->thread, NULL);
+		cleanup(main.philo, main.input, main.philos_num);
 		return (0);
 	}
 	printf("Error\nInvalid number of arguments\n");

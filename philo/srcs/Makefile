@@ -6,14 +6,15 @@
 #    By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/22 13:14:09 by alsaeed           #+#    #+#              #
-#    Updated: 2023/12/29 16:14:01 by alsaeed          ###   ########.fr        #
+#    Updated: 2023/12/30 17:24:37 by alsaeed          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME =			../philo
 
 SRCS =			main.c philo_utils.c parse_utils1.c parse_utils2.c \
-				parse_utils3.c ft_split.c time_utils.c trigger_utils.c
+				parse_utils3.c parse_utils4.c ft_split.c time_utils.c \
+				trigger_utils.c
 
 OBJS_DIR =		objs/
 OBJS =			$(addprefix $(OBJS_DIR), $(SRCS:.c=.o))

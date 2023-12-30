@@ -6,20 +6,24 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 18:28:00 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/29 16:10:28 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/12/30 18:22:17 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void	fill_table(t_table *table, int philos_num)
+t_table	*fill_table(int philos_num)
 {
+	t_table	*table;
+
+	table = ft_calloc(sizeof(t_table), 1);
 	table->dead_philo = FALSE;
 	table->fork_lock = ft_calloc(sizeof(pthread_mutex_t), \
 						philos_num);
 	table->fork_stat = ft_calloc(sizeof(t_bool), philos_num);
 	table->fork_mask = ft_calloc(sizeof(int), philos_num);
 	pthread_mutex_init(&table->table_lock, NULL);
+	return (table);
 }
 
 void	init_philos(t_philo	**philo, char **input, int philos_num, \
@@ -28,8 +32,7 @@ void	init_philos(t_philo	**philo, char **input, int philos_num, \
 	int		i;
 	t_table	*table;
 
-	table = ft_calloc(sizeof(t_table), 1);
-	fill_table(table, philos_num);
+	table = fill_table(philos_num);
 	i = -1;
 	while (++i < philos_num)
 	{
@@ -81,4 +84,15 @@ void	*single_philo(t_philo *philo)
 		curr_time = get_current_time();
 	printf("%lu %d died\n", get_duration(&philo->life_tv), philo->id);
 	return (NULL);
+}
+
+t_bool	sleep_bro(t_philo *philo)
+{
+	trigger_on(philo, FORK_LOCK);
+	trigger_off(philo, FORK_STAT);
+	display_log(philo, SLEEP);
+	trigger_off(philo, FORK_LOCK);
+	if (sleeping_time(philo))
+		return (TRUE);
+	return (FALSE);
 }

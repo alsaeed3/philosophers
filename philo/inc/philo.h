@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 20:56:05 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/29 14:59:31 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/12/30 18:21:49 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,36 @@ typedef struct s_philo
 	t_table			*table;
 }	t_philo;
 
+typedef struct s_main
+{
+	t_philo		**philo;
+	char		**input;
+	int			i;
+	int			j;
+	int			philos_num;
+	t_bool		error;
+}	t_main;
+
+void		fill_main(t_main *main);
 t_bool		parse_nonnum_arg(char **s);
 char		**parse_args(int ac, char **av, t_bool *error);
 void		free_parse(char **arr);
 void		free_array(char **array);
 t_bool		check_overflow(char **str, int ac);
 t_bool		ft_isspace_str(char *s);
-t_bool		ft_space_arg(char **s);
+t_bool		ft_space_arg(char **s, t_bool *error);
 char		*ft_strjoin_sp(int ac, char **av, t_bool *error);
 int			ft_array_size(char **array);
 char		**ft_get_array(int ac, char **av, t_bool *error);
 long		ft_atoi(char *num, t_bool *error);
 char		**ft_split(char *s, char c);
+t_bool		ft_check_array(char **str_arr, int ac, t_bool *error);
+void		check_digit_after_space(char **av, int i, int j, t_bool *error);
+t_bool		ft_is_digit(char c);
+t_bool		ft_check_after_space(char *str, int i, int len_str);
+int			ft_strlen(char *str);
 void		*ft_calloc(size_t count, size_t size);
-void		fill_table(t_table *table, int philos_num);
+t_table		*fill_table(int philos_num);
 void		init_philos(t_philo	**philo, char **input, int philos_num, \
 			t_bool *error);
 void		display_log(t_philo *philo, int stat);

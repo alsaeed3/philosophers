@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 19:42:13 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/28 20:06:40 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/12/30 17:05:43 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ t_bool	ft_isspace_str(char *s)
 	return (TRUE);
 }
 
-t_bool	ft_space_arg(char **s)
+t_bool	ft_space_arg(char **s, t_bool *error)
 {
 	int	i;
 
@@ -79,7 +79,10 @@ t_bool	ft_space_arg(char **s)
 	while (s[i])
 	{
 		if (ft_isspace_str(s[i]))
+		{
+			*error = TRUE;
 			return (TRUE);
+		}
 		i++;
 	}
 	return (FALSE);

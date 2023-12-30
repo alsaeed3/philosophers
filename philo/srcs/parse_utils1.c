@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 15:24:45 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/28 20:03:41 by alsaeed          ###   ########.fr       */
+/*   Updated: 2023/12/30 17:29:32 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ long	ft_atoi(char *num, t_bool *error)
 			*error = TRUE;
 		i++;
 	}
+	if (!res)
+		*error = TRUE;
 	return (res);
 }
 
