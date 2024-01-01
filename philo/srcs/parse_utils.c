@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_utils3.c                                     :+:      :+:    :+:   */
+/*   parse_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/24 19:42:13 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/30 17:05:43 by alsaeed          ###   ########.fr       */
+/*   Created: 2024/01/01 18:39:18 by alsaeed           #+#    #+#             */
+/*   Updated: 2024/01/01 18:47:14 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,6 @@ t_bool	parse_nonnum_arg(char **s)
 	return (FALSE);
 }
 
-void	get_array(int ac, char **av, char ***str_arr, t_bool *error)
-{
-	char	*str;
-
-	str = NULL;
-	str = ft_strjoin_sp(ac, av, error);
-	*str_arr = ft_split(str, ' ');
-	free (str);
-	if (parse_nonnum_arg(*str_arr))
-	{
-		free_parse(*str_arr);
-		*error = TRUE;
-	}
-}
-
 t_bool	ft_isspace_str(char *s)
 {
 	int	i;
@@ -86,31 +71,4 @@ t_bool	ft_space_arg(char **s, t_bool *error)
 		i++;
 	}
 	return (FALSE);
-}
-
-void	free_array(char **array)
-{
-	int	i;
-
-	if (!array)
-		return ;
-	i = 0;
-	while (array[i])
-	{
-		if (!array[i])
-			return ;
-		free (array[i]);
-		array[i] = NULL;
-		i++;
-	}
-	if (array[i])
-	{
-		free (array[i]);
-		array[i] = NULL;
-	}
-	if (array)
-	{
-		free (array);
-		array = NULL;
-	}
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split.c                                         :+:      :+:    :+:   */
+/*   manipul_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alsaeed <alsaeed@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 19:53:09 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/04 16:23:15 by alsaeed          ###   ########.fr       */
+/*   Updated: 2024/01/01 18:46:55 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,31 +25,19 @@ void	*ft_calloc(size_t count, size_t size)
 	return (memory);
 }
 
-static int	ft_count_words(char *s, char c)
+void	get_array(int ac, char **av, char ***str_arr, t_bool *error)
 {
-	int	count;
+	char	*str;
 
-	count = 0;
-	while (*s)
+	str = NULL;
+	str = ft_strjoin_sp(ac, av, error);
+	*str_arr = ft_split(str, ' ');
+	free (str);
+	if (parse_nonnum_arg(*str_arr))
 	{
-		if (*s != c && (*(s + 1) == c || *(s + 1) == '\0'))
-			count++;
-		s++;
+		free_parse(*str_arr);
+		*error = TRUE;
 	}
-	return (count);
-}
-
-static int	ft_wordlen(char *s, char c)
-{
-	int	len;
-
-	len = 0;
-	while (*s && *s != c)
-	{
-		len++;
-		s++;
-	}
-	return (len);
 }
 
 static char	*ft_wordcpy(char *dst, char *src, int n)
@@ -93,4 +81,31 @@ char	**ft_split(char *s, char c)
 		}
 	}
 	return (array[i] = NULL, array);
+}
+
+char	*ft_strjoin_sp(int ac, char **av, t_bool *error)
+{
+	char	*str;
+	int		size;
+	int		i;
+	int		j;
+	int		k;
+
+	size = char_no(av) + ac;
+	str = ft_calloc(sizeof(char), size);
+	i = 0;
+	k = 0;
+	while (++i < ac)
+	{
+		j = 0;
+		while (av[i][j])
+		{
+			check_digit_after_space(av, i, j, error);
+			str[k++] = av[i][j++];
+		}
+		if (av[i + 1] != NULL)
+			str[k++] = ' ';
+	}
+	str[k] = '\0';
+	return (str);
 }

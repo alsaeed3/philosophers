@@ -1,55 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_utils1.c                                     :+:      :+:    :+:   */
+/*   clean_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 15:24:45 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/30 17:29:32 by alsaeed          ###   ########.fr       */
+/*   Updated: 2024/01/01 18:33:36 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
-
-long	ft_atoi(char *num, t_bool *error)
-{
-	int		i;
-	long	res;
-
-	res = 0;
-	i = 0;
-	while (num[i] == ' ' || (num[i] >= '\t' && num[i] <= '\r'))
-		i++;
-	if (num[i] == '-' || num[i] == '+')
-	{
-		if (num[i] == '-')
-			*error = TRUE;
-		i++;
-	}
-	if (num[i] == '+')
-		*error = TRUE;
-	while (num[i] >= '0' && num[i] <= '9')
-	{
-		res = res * 10 + num[i] - 48;
-		if (res > 2147483647)
-			*error = TRUE;
-		i++;
-	}
-	if (!res)
-		*error = TRUE;
-	return (res);
-}
-
-int	ft_array_size(char **array)
-{
-	int	i;
-
-	i = 0;
-	while (array[i] != NULL)
-		i++;
-	return (i);
-}
 
 char	**ft_get_array(int ac, char **av, t_bool *error)
 {
@@ -70,29 +31,6 @@ char	**ft_get_array(int ac, char **av, t_bool *error)
 	return (array);
 }
 
-void	display_log(t_philo *philo, int stat)
-{
-	pthread_mutex_lock(&philo->table->table_lock);
-	if (!philo->table->dead_philo)
-	{
-		printf("%lu %d", get_duration(&philo->life_tv), philo->id);
-		if (stat == TAKE)
-			printf(" has taken a fork\n");
-		else if (stat == EAT)
-			printf(" is eating\n");
-		else if (stat == SLEEP)
-			printf(" is sleeping\n");
-		else if (stat == THINK)
-			printf(" is thinking\n");
-		else if (stat == DIE)
-		{
-			printf(" died\n");
-			philo->table->dead_philo = TRUE;
-		}
-	}
-	pthread_mutex_unlock(&philo->table->table_lock);
-}
-
 void	cleanup(t_philo **philos, char **input, int range)
 {
 	int	i;
@@ -101,8 +39,9 @@ void	cleanup(t_philo **philos, char **input, int range)
 	i = -1;
 	while (++i < range)
 		pthread_mutex_destroy(&philos[i]->table->fork_lock[i]);
+	pthread_mutex_destroy(&(*philos)->table->print_lock);
+	pthread_mutex_destroy(&(*philos)->table->time_lock);
 	pthread_mutex_destroy(&(*philos)->table->table_lock);
-	free((*philos)->table->fork_stat);
 	free((*philos)->table->fork_mask);
 	free((*philos)->table->fork_lock);
 	free((*philos)->table);
@@ -117,4 +56,38 @@ void	cleanup(t_philo **philos, char **input, int range)
 		free(philos);
 		philos = NULL;
 	}
+}
+
+void	free_array(char **array)
+{
+	int	i;
+
+	if (!array)
+		return ;
+	i = 0;
+	while (array[i])
+	{
+		if (!array[i])
+			return ;
+		free (array[i]);
+		array[i] = NULL;
+		i++;
+	}
+	if (array[i])
+	{
+		free (array[i]);
+		array[i] = NULL;
+	}
+	if (array)
+	{
+		free (array);
+		array = NULL;
+	}
+}
+
+void	free_parse(char **arr)
+{
+	if (arr)
+		free_array(arr);
+	printf("Error\nInvalid arguments\n");
 }

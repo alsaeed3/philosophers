@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 20:56:05 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/30 18:21:49 by alsaeed          ###   ########.fr       */
+/*   Updated: 2024/01/01 18:36:50 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ typedef struct s_table
 	int				total_meals;
 	t_bool			*fork_stat;
 	int				*fork_mask;
+	pthread_mutex_t	print_lock;
+	pthread_mutex_t	time_lock;
 	pthread_mutex_t	table_lock;
 	pthread_mutex_t	*fork_lock;
 }	t_table;
@@ -88,13 +90,18 @@ char		**ft_split(char *s, char c);
 t_bool		ft_check_array(char **str_arr, int ac, t_bool *error);
 void		check_digit_after_space(char **av, int i, int j, t_bool *error);
 t_bool		ft_is_digit(char c);
-t_bool		ft_check_after_space(char *str, int i, int len_str);
+t_bool		cont_eat_noodles(t_philo *philo);
 int			ft_strlen(char *str);
+int			char_no(char **av);
+int			ft_count_words(char *s, char c);
+int			ft_wordlen(char *s, char c);
 void		*ft_calloc(size_t count, size_t size);
 t_table		*fill_table(int philos_num);
 void		init_philos(t_philo	**philo, char **input, int philos_num, \
 			t_bool *error);
+void		inspecting_philos(t_philo **philo, int philos_num);
 void		display_log(t_philo *philo, int stat);
+t_bool		total_meals_check(t_philo *philo);
 t_bool		is_dead(t_philo *philo);
 void		*single_philo(t_philo *philo);
 long		get_duration(struct timeval *prev_time);
@@ -105,7 +112,6 @@ t_bool		sleep_bro(t_philo *philo);
 t_bool		eat_noodles(t_philo *philo);
 t_bool		check_greedy(t_philo *philo);
 void		trigger_off(t_philo *philo, int flag);
-void		trigger_mask(t_philo *philo);
 void		trigger_on(t_philo *philo, int flag);
 void		cleanup(t_philo **philos, char **input, int range);
 

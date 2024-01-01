@@ -1,16 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_utils2.c                                     :+:      :+:    :+:   */
+/*   print_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 18:20:55 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/30 17:23:01 by alsaeed          ###   ########.fr       */
+/*   Updated: 2024/01/01 18:30:28 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
+
+void	display_log(t_philo *philo, int stat)
+{
+	if (!is_dead(philo))
+	{
+		pthread_mutex_lock(&philo->table->print_lock);
+		printf("%lu %d", get_duration(&philo->life_tv), philo->id);
+		if (stat == TAKE)
+			printf(" has taken a fork\n");
+		else if (stat == EAT)
+			printf(" is eating\n");
+		else if (stat == SLEEP)
+			printf(" is sleeping\n");
+		else if (stat == THINK)
+			printf(" is thinking\n");
+		else if (stat == DIE)
+			printf(" died\n");
+		pthread_mutex_unlock(&philo->table->print_lock);
+	}
+}
 
 t_bool	check_overflow(char **str, int ac)
 {
@@ -26,20 +46,11 @@ t_bool	check_overflow(char **str, int ac)
 	return (FALSE);
 }
 
-void	free_parse(char **arr)
-{
-	if (arr)
-		free_array(arr);
-	printf("Error\nInvalid arguments\n");
-}
-
 char	**parse_args(int ac, char **av, t_bool *error)
 {
 	char	*str;
 	char	**str_arr;
-	int		i;
 
-	i = 0;
 	str_arr = NULL;
 	if (ft_space_arg(av, error))
 	{
@@ -53,7 +64,6 @@ char	**parse_args(int ac, char **av, t_bool *error)
 		return (free(str), NULL);
 	}
 	str_arr = ft_split(str, ' ');
-	i = -1;
 	free (str);
 	str = NULL;
 	if (ft_check_array(str_arr, ac, error))

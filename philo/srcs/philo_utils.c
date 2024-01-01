@@ -6,71 +6,35 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 18:28:00 by alsaeed           #+#    #+#             */
-/*   Updated: 2023/12/30 18:22:17 by alsaeed          ###   ########.fr       */
+/*   Updated: 2024/01/01 20:21:07 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-t_table	*fill_table(int philos_num)
-{
-	t_table	*table;
-
-	table = ft_calloc(sizeof(t_table), 1);
-	table->dead_philo = FALSE;
-	table->fork_lock = ft_calloc(sizeof(pthread_mutex_t), \
-						philos_num);
-	table->fork_stat = ft_calloc(sizeof(t_bool), philos_num);
-	table->fork_mask = ft_calloc(sizeof(int), philos_num);
-	pthread_mutex_init(&table->table_lock, NULL);
-	return (table);
-}
-
-void	init_philos(t_philo	**philo, char **input, int philos_num, \
-		t_bool *error)
-{
-	int		i;
-	t_table	*table;
-
-	table = fill_table(philos_num);
-	i = -1;
-	while (++i < philos_num)
-	{
-		philo[i] = ft_calloc(sizeof(t_philo), 1);
-		philo[i]->table = table;
-		philo[i]->id = i + 1;
-		philo[i]->table->fork_stat[i] = FALSE;
-		philo[i]->table->fork_mask[i] = 0;
-		philo[i]->philos_num = philos_num;
-		philo[i]->time_die = ft_atoi(input[1], error);
-		philo[i]->time_eat = ft_atoi(input[2], error);
-		philo[i]->time_sleep = ft_atoi(input[3], error);
-		pthread_mutex_init(&philo[i]->table->fork_lock[i], NULL);
-		gettimeofday(&philo[i]->life_tv, NULL);
-		philo[i]->life = get_current_time();
-		if (ft_array_size(input) == 5)
-			philo[i]->meals = ft_atoi(input[4], error);
-		else
-			philo[i]->meals = -1;
-		philo[i]->table->total_meals = philo[i]->philos_num;
-	}
-}
-
 t_bool	check_greedy(t_philo *philo)
 {
+	pthread_mutex_lock(&philo->table->table_lock);
 	if (philo->id % philo->philos_num)
 	{
 		if (philo->table->fork_mask[philo->id - 1] == philo->id \
 			|| philo->table->fork_mask[philo->id] == philo->id)
-			return (FALSE);
+		{
+			pthread_mutex_unlock(&philo->table->table_lock);
+			return (TRUE);
+		}
 	}
-	else if (!(philo->id % philo->philos_num))
+	else
 	{
 		if (philo->table->fork_mask[0] == philo->id \
 			|| philo->table->fork_mask[philo->id - 1] == philo->id)
-			return (FALSE);
+		{
+			pthread_mutex_unlock(&philo->table->table_lock);
+			return (TRUE);
+		}
 	}
-	return (TRUE);
+	pthread_mutex_unlock(&philo->table->table_lock);
+	return (FALSE);
 }
 
 void	*single_philo(t_philo *philo)
@@ -80,6 +44,7 @@ void	*single_philo(t_philo *philo)
 
 	curr_time = get_current_time();
 	deadline = curr_time + (philo->time_die * 1000);
+	printf("%lu %d has taken a fork\n", get_duration(&philo->life_tv), philo->id);
 	while (curr_time < deadline)
 		curr_time = get_current_time();
 	printf("%lu %d died\n", get_duration(&philo->life_tv), philo->id);
@@ -88,10 +53,7 @@ void	*single_philo(t_philo *philo)
 
 t_bool	sleep_bro(t_philo *philo)
 {
-	trigger_on(philo, FORK_LOCK);
-	trigger_off(philo, FORK_STAT);
 	display_log(philo, SLEEP);
-	trigger_off(philo, FORK_LOCK);
 	if (sleeping_time(philo))
 		return (TRUE);
 	return (FALSE);
