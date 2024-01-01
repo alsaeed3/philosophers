@@ -6,7 +6,7 @@
 /*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 18:28:00 by alsaeed           #+#    #+#             */
-/*   Updated: 2024/01/01 20:21:07 by alsaeed          ###   ########.fr       */
+/*   Updated: 2024/01/01 20:38:43 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void	*single_philo(t_philo *philo)
 
 	curr_time = get_current_time();
 	deadline = curr_time + (philo->time_die * 1000);
-	printf("%lu %d has taken a fork\n", get_duration(&philo->life_tv), philo->id);
 	while (curr_time < deadline)
 		curr_time = get_current_time();
 	printf("%lu %d died\n", get_duration(&philo->life_tv), philo->id);
