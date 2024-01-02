@@ -3,22 +3,23 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alsaeed <alsaeed@student.42abudhabi.ae>    +#+  +:+       +#+         #
+#    By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/22 13:14:09 by alsaeed           #+#    #+#              #
-#    Updated: 2023/12/04 16:23:18 by alsaeed          ###   ########.fr        #
+#    Updated: 2024/01/01 18:44:42 by alsaeed          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME =			../philo
 
-SRCS =			main.c philo_utils.c parse_utils1.c parse_utils2.c \
-				parse_utils3.c ft_split.c time_utils.c trigger_utils.c
+SRCS =			check_utils.c clean_utils.c count_utils.c init_utils.c \
+				main.c manipul_utils.c parse_utils.c philo_utils.c \
+				print_utils.c time_utils.c trigger_utils.c
 
 OBJS_DIR =		objs/
 OBJS =			$(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 
-CFLAGS =		-Wall -Wextra -Werror -pthread
+CFLAGS =		-Wall -Wextra -Werror -pthread -g3
 
 all:			$(NAME)
 
@@ -48,9 +49,3 @@ fclean: 		clean
 re: 			fclean all
 
 .PHONY: 		all clean fclean re
-
-# VALGRIND TEST FLAGS:
-#	1) valgrind --tool=helgrind ./philo x y z
-#	2) valgrind --tool=helgrind --tool=drd ./philo x y z
-#	3) valgrind ./philo x y z for mem leaks
-#	4) valgrind --tool=helgrind --history-level=none  ./philo x y z
