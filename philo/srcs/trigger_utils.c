@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   trigger_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
+/*   By: alsaeed <alsaeed@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 19:03:08 by alsaeed           #+#    #+#             */
-/*   Updated: 2024/01/02 14:52:24 by alsaeed          ###   ########.fr       */
+/*   Updated: 2024/03/14 02:00:29 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,12 @@ t_bool	is_dead(t_philo *philo)
 t_bool	total_meals_check(t_philo *philo)
 {
 	usleep(20);
-	pthread_mutex_lock(&philo->table->table_lock);
+	pthread_mutex_lock(&philo->table->meals_lock);
 	if (philo->table->total_meals)
 	{
-		pthread_mutex_unlock(&philo->table->table_lock);
+		pthread_mutex_unlock(&philo->table->meals_lock);
 		return (TRUE);
 	}
-	pthread_mutex_unlock(&philo->table->table_lock);
+	pthread_mutex_unlock(&philo->table->meals_lock);
 	return (FALSE);
 }

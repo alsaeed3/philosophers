@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alsaeed <alsaeed@student.42.fr>            +#+  +:+       +#+        */
+/*   By: alsaeed <alsaeed@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 20:56:15 by alsaeed           #+#    #+#             */
-/*   Updated: 2024/01/02 14:48:22 by alsaeed          ###   ########.fr       */
+/*   Updated: 2024/03/14 02:00:00 by alsaeed          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,13 @@ t_bool	eat_noodles(t_philo *philo)
 
 t_bool	cont_eat_noodles(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->table->table_lock);
+	pthread_mutex_lock(&philo->table->meals_lock);
 	if (!philo->table->total_meals)
 	{
-		pthread_mutex_unlock(&philo->table->table_lock);
+		pthread_mutex_unlock(&philo->table->meals_lock);
 		return (TRUE);
 	}
-	pthread_mutex_unlock(&philo->table->table_lock);
+	pthread_mutex_unlock(&philo->table->meals_lock);
 	trigger_on(philo, FORK_MASK);
 	pthread_mutex_lock(&philo->table->time_lock);
 	philo->life = get_duration(&philo->life_tv);
